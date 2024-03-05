@@ -25,13 +25,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+              <a class="nav-link " aria-current="page" href="index.html">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="studentList.html">Student List</a>
+              <a class="nav-link active" href="studentList.html">Student List</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" role="button">
+              <a class="nav-link" href="addStudent.html">
                 Add Student
               </a>
             </li>
@@ -81,7 +81,7 @@
           
         generateList(data);
 
-          deleteStudent();
+          deleteStudent(data);
         }
         else
         {
@@ -116,7 +116,7 @@
                 }
               if (filteredStudents.length > 0){
               generateList(filteredStudents);
-                deleteStudent();
+                deleteStudent(filteredStudents);
               }
                 else
               {
@@ -126,7 +126,7 @@
               else
               {
                 generateList(data);
-                deleteStudent();
+                deleteStudent(data);
               }
             }
             else
@@ -152,7 +152,7 @@
       }
     }
 
-    function deleteStudent()
+    function deleteStudent(dataList)
       {
         const deleteButtons = document.querySelectorAll("#deleteButton");
         console.log(deleteButtons);
@@ -173,7 +173,7 @@
                 {
                   messageBox.textContent = 'Student successfully deleted!'
                   showStudentList.innerHTML = ``;
-                  showStudents();
+                  generateList(dataList);
                 }
               })
             })
