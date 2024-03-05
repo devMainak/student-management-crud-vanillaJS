@@ -59,7 +59,7 @@
       </div>
       <div class="mb-3">
       <label for="selectGender" >Gender: </label>
-      <select>
+      <select id="selectGender">
         <option value="Male" >Male</option>
         <option value="Female">Female</option>
         <option value="Others">Others</option>
@@ -85,6 +85,7 @@
       </div>
         <button type="submit" class="btn btn-primary">Add Student</button>
         </form>
+      <div id="success" class="my-3 fs-4 fw-semibold" style="color: green;"></div>
     </div>
   </main>
 
@@ -92,15 +93,45 @@
     const addStudentForm = document.querySelector("#addStudentForm");
     const name = document.querySelector("#name");
     const age = document.querySelector("#age");
-    const gender = document.querySelector("#gender");
+    const gender = document.querySelector("#selectGender");
     const grade = document.querySelector("#grade");
     const marks = document.querySelector("#marks");
     const attendence = document.querySelector("#attendence");
+    const successMessage = document.querySelector("#success");
+
+    const apiUrl =  'https://student-management-Student-neog.replit.app/students';
 
     addStudentForm.addEventListener("submit", function(event){
       event.preventDefault();
 
-      
+      const studentData = {
+        name: name.value,
+        age: age.value,
+        gender: gender.value,
+        grade: grade.value,
+        marks: marks.value,
+        attendence: attendence.value
+      }
+      fetch(apiUrl, {
+        method: "POST",
+        body: JSON.stringify(studentData),
+        headers: {
+          "Content-Type" : "application/json"
+        }
+      })
+      .then(function(response){
+        return response.json();
+      })
+      .then(function(data){
+        if (data)
+        {
+          successMessage.textContent = `Student added successfully!`
+        }
+      })
+      .catch(function(error){
+        successMessage.style.color = 'red';
+        successMessage.textContent = `Some error occured!`
+      })
     })
   </script>
 </body>
