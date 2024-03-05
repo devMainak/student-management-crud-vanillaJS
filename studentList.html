@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <header>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary justify-contents-end">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Student Management</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="studentList.html">Student List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" role="button">
+                Add Student
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <h1 class="display-5 fw-semibold py-3">Student List</h1>
+      <div class="my-3">
+        <label for="selectGender" class="form-label">Filter by Gender:</label>
+        <div class="input-group">
+          <select id="selectGender" class="form-select">
+            <option class="All">All</option>
+            <option class="Male">Male</option>
+            <option class="Female">Female</option>
+            <option class="Others">Others</option>
+          </select>
+        </div>
+      </div>
+      <ul id="showStudentList" class="list-group">
+        
+      </ul>
+      <div id="messageBox" class="fs-4 fw-semibold"></div>
+    </div>
+  </main>
+
+  <script>
+    const showStudentList = document.querySelector("#showStudentList");
+    const messageBox = document.querySelector("#messageBox");
+    const selectGender = document.querySelector("#selectGender")
+    const apiUrl = 'https://student-management-student-neog.replit.app/students';
+
+    function showStudents(){
+      messageBox.textContent = `Loading...`
+      fetch(apiUrl)
+    .then(function(response){
+      return response.json();
+    })
+      .then(function(data){
+        if(data && data.length > 0)
+        {
+         messageBox.textContent = ``;
+          for (let i = 0; i < data.length; i++)
+            {
+              const listItem = document.createElement('li');
+              listItem.className = `list-group-item`;
+              listItem.innerHTML = `${data[i].name} - Grade: ${data[i].grade} - Age: ${data[i].age} - Gender: ${data[i].gender} - Marks: ${data[i].marks === null ? "undefined" : data[i].marks} <button class="btn btn-danger float-end" student-id="${data[i]._id}" id="deleteBtn">Delete</button>`
+
+              showStudentList.appendChild(listItem);
+            }
+        }
+        
+      })
+      .catch(function(error){
+        messageBox.textContent = `Some error occured while loading student list!`
+      })
+    }
+
+    showStudents();
+  </script>
+</body>
