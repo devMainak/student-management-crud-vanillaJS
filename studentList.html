@@ -48,10 +48,10 @@
         <label for="selectGender" class="form-label">Filter by Gender:</label>
         <div class="input-group">
           <select id="selectGender" class="form-select">
-            <option class="All">All</option>
-            <option class="Male">Male</option>
-            <option class="Female">Female</option>
-            <option class="Others">Others</option>
+            <option value="All">All</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Others">Others</option>
           </select>
         </div>
       </div>
@@ -66,8 +66,8 @@
     const showStudentList = document.querySelector("#showStudentList");
     const messageBox = document.querySelector("#messageBox");
     const selectGender = document.querySelector("#selectGender")
-    const apiUrl = 'https://student-management-student-neog.replit.app/students';
-
+    const apiUrl = 'https://student-management-student-neog.replit.app/students';    
+    
     function showStudents(){
       messageBox.textContent = `Loading...`
       fetch(apiUrl)
@@ -78,20 +78,75 @@
         if(data && data.length > 0)
         {
          messageBox.textContent = ``;
-          for (let i = 0; i < data.length; i++)
-            {
-              const listItem = document.createElement('li');
-              listItem.className = `list-group-item`;
-              listItem.innerHTML = `${data[i].name} - Grade: ${data[i].grade} - Age: ${data[i].age} - Gender: ${data[i].gender} - Marks: ${data[i].marks === null ? "undefined" : data[i].marks} <button class="btn btn-danger float-end" student-id="${data[i]._id}" id="deleteBtn">Delete</button>`
-
-              showStudentList.appendChild(listItem);
-            }
+          
+        generateList(data);
+        }
+        else
+        {
+          messageBox.textContent = `Failed to load student data!`
         }
         
       })
       .catch(function(error){
         messageBox.textContent = `Some error occured while loading student list!`
       })
+    };
+
+    selectGender.addEventListener("change", function()
+      {
+        console.log(`working`);
+        showStudentList.innerHTML = '';
+        const selectedGender = selectGender.value;
+        fetch(apiUrl)
+        .then(function(response){
+          return response.json();
+        })
+          .then(function(data){
+            if(data && data.length > 0)
+            {
+             messageBox.textContent = ``;
+              if (selectedGender !== 'All'){
+              let filteredStudents = [];
+              for (let i = 0; i < data.length; i++)
+                {
+                  if (data[i].gender === selectedGender){
+                    filteredStudents.push(data[i])
+                  }
+                }
+              if (filteredStudents.length > 0){
+              generateList(filteredStudents);
+              }
+                else
+              {
+                messageBox.textContent = `No Data Found!`
+              }
+            }
+              else
+              {
+                generateList(data);
+              }
+            }
+            else
+            {
+              messageBox.textContent = `Failed to load data!`
+            }
+          })
+          .catch(function(error){
+            messageBox.textContent = `Some error occured while loading student list!`
+          })
+        
+      }
+    );
+
+    function generateList(dataList){
+      for (let i = 0; i < dataList.length; i++)
+      {
+        const listItem = document.createElement('li');
+        listItem.className = `list-group-item`;
+        listItem.innerHTML = `${dataList[i].name} - Grade: ${dataList[i].grade} - Age: ${dataList[i].age} - Gender: ${dataList[i].gender} - Marks: ${dataList[i].marks === null ? "undefined" : dataList[i].marks} <button class="btn btn-danger float-end" student-id="${dataList[i]._id}" id="deleteBtn">Delete</button>`
+
+        showStudentList.appendChild(listItem);
+      }
     }
 
     showStudents();
