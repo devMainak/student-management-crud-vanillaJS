@@ -55,10 +55,10 @@
           </select>
         </div>
       </div>
+      <div id="messageBox" class="fs-4 fw-semibold"></div>
       <ul id="showStudentList" class="list-group">
         
       </ul>
-      <div id="messageBox" class="fs-4 fw-semibold"></div>
     </div>
   </main>
 
@@ -80,6 +80,8 @@
          messageBox.textContent = ``;
           
         generateList(data);
+
+          deleteStudent();
         }
         else
         {
@@ -94,7 +96,6 @@
 
     selectGender.addEventListener("change", function()
       {
-        console.log(`working`);
         showStudentList.innerHTML = '';
         const selectedGender = selectGender.value;
         fetch(apiUrl)
@@ -115,15 +116,17 @@
                 }
               if (filteredStudents.length > 0){
               generateList(filteredStudents);
+                deleteStudent();
               }
                 else
               {
-                messageBox.textContent = `No Data Found!`
+                messageBox.textContent = `No Data Found!`        
               }
             }
               else
               {
                 generateList(data);
+                deleteStudent();
               }
             }
             else
@@ -143,12 +146,40 @@
       {
         const listItem = document.createElement('li');
         listItem.className = `list-group-item`;
-        listItem.innerHTML = `${dataList[i].name} - Grade: ${dataList[i].grade} - Age: ${dataList[i].age} - Gender: ${dataList[i].gender} - Marks: ${dataList[i].marks === null ? "undefined" : dataList[i].marks} <button class="btn btn-danger float-end" student-id="${dataList[i]._id}" id="deleteBtn">Delete</button>`
+        listItem.innerHTML = `${dataList[i].name} - Grade: ${dataList[i].grade} - Age: ${dataList[i].age} - Gender: ${dataList[i].gender} - Marks: ${dataList[i].marks === null ? "undefined" : dataList[i].marks} <button class="btn btn-danger float-end" student-id="${dataList[i]._id}" id="deleteButton">Delete</button>`
 
         showStudentList.appendChild(listItem);
       }
     }
 
+    function deleteStudent()
+      {
+        const deleteButtons = document.querySelectorAll("#deleteButton");
+        console.log(deleteButtons);
+        for (let i = 0; i < deleteButtons.length; i++)
+          {
+            deleteButtons[i].addEventListener("click", function(event){
+              const studentId = event.target.getAttribute('student-id');
+              const deleteApiUrl = `${apiUrl}/${studentId}`;
+
+              fetch(deleteApiUrl, {
+                method: "DELETE"
+              })
+              .then(function(response){
+                return response.json();
+              })
+              .then(function(data){
+                if (data)
+                {
+                  messageBox.textContent = 'Student successfully deleted!'
+                  showStudentList.innerHTML = ``;
+                  showStudents();
+                }
+              })
+            })
+          }
+      }
+    
     showStudents();
   </script>
 </body>
